@@ -4,7 +4,6 @@
     "main": "lib/index.js",
     "author": "marcos.lin@farport.co",
     "license": "MIT",
-    "private": true,
     "types": "lib/index",
     "scripts": {
         "build": "yarn lint && yarn build:clean && yarn build:ts",
