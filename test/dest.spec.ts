@@ -26,7 +26,7 @@ class TestGCloudDestination extends GCloudDestination {
 
 describe('logger', () => {
     const logger = LoggerFactory.create('GLoggerTest');
-    LoggerFactory.addLogDestination(new TestGCloudDestination());
+    LoggerFactory.addLogDestination(new TestGCloudDestination(LogLevel.DEBUG));
 
     beforeEach(() => {
         logCollector = [];

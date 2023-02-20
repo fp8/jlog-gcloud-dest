@@ -1023,10 +1023,10 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
-jlog-facade@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/jlog-facade/-/jlog-facade-0.5.2.tgz#3ee8680590654f092d8af06353c146d7959ff0a0"
-  integrity sha512-DQ9mLwQhLZSv9tDnn4OhWMOTjuJGfm8qRRWiqrXvJuWcdN9GdW4xeDxCKi9Bq51xwwyQZ+dEFRLdE7QkQdUTug==
+jlog-facade@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/jlog-facade/-/jlog-facade-0.6.0.tgz#fb0f9c44e0bece7254894ddec24a20d6bfda029d"
+  integrity sha512-QrXhgG5Yr3FnC0Yu62GmK3uXF+Whv9ZoUm8I4/dk90QGWMzqUXPUSD8T6X3U7Xv80ai83cEXPDUH1tg6Lmks9g==
 
 js-tokens@^4.0.0:
   version "4.0.0"

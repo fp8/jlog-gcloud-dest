@@ -1,6 +1,7 @@
 import {
   TJsonValue, LogLevel, IJLogEntry, AbstractLoggable,
-  Label, buildOutputDataForDestination, AbstractLogDestination
+  Label, buildOutputDataForDestination, AbstractLogDestination,
+  useDestination
 } from 'jlog-facade';
 
 export type TGLOGGER_SEVERITY = 'EMERGENCY' | 'ERROR' | 'WARNING' | 'INFO' | 'DEBUG';
@@ -152,6 +153,10 @@ export function formatGCloudLogOutput(entry: IJLogEntry): IGCloudLogOutput {
  * Google Cloud Logging Destination
  */
 export class GCloudDestination extends AbstractLogDestination{
+  public static use(level?: string | LogLevel, ...filters: string[]): GCloudDestination {
+    return useDestination(GCloudDestination, level, filters);
+  }
+
   /**
    * A simple wrapper allow test to override this method
    * @param entry 
