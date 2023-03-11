@@ -25,7 +25,7 @@ jobs:
         shell: bash
 
       - name: Authenticate with private NPM package
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH }}" > ~/.npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.FP8_NPM_PUBLISH }}" > ~/.npmrc
 
       - name: Publish npm
         run: npm publish
