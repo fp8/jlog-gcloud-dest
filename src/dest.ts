@@ -1,7 +1,8 @@
 import {
   TJsonValue, LogLevel, IJLogEntry, AbstractLoggable,
   Label, buildOutputDataForDestination, AbstractLogDestination,
-  useDestination
+  useDestination,
+  IJson
 } from 'jlog-facade';
 
 export type TGLOGGER_SEVERITY = 'EMERGENCY' | 'ERROR' | 'WARNING' | 'INFO' | 'DEBUG';
@@ -108,7 +109,7 @@ function appendErrorToGCloudOutput(input: IGCloudLogOutput, error?: Error): void
  * @param entry 
  * @returns 
  */
-export function formatGCloudLogOutput(entry: IJLogEntry): IGCloudLogOutput {
+export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel, defaultPayload?: IJson): IGCloudLogOutput {
   const severity = levelToSeverity(entry.level);
   const message = entry.message;
   const time = entry.time.toISOString();
@@ -128,7 +129,7 @@ export function formatGCloudLogOutput(entry: IJLogEntry): IGCloudLogOutput {
   }
 
   // Build the payload for the logger
-  const payload = buildOutputDataForDestination(loggables, entry.data, entry.values);
+  const payload = buildOutputDataForDestination(loggables, entry.data, defaultPayload, entry.values);
 
   // Add logger name
   labels[GCLOUD_LOGGER_NAME_KEY] = entry.name;
@@ -162,8 +163,8 @@ export class GCloudDestination extends AbstractLogDestination{
    * @param entry 
    * @returns 
    */
-  protected formatOutput(entry: IJLogEntry): IGCloudLogOutput {
-    return formatGCloudLogOutput(entry);
+  protected formatOutput(entry: IJLogEntry, loggerLevel?: LogLevel, defaultPayload?: IJson): IGCloudLogOutput {
+    return formatGCloudLogOutput(entry, loggerLevel, defaultPayload);
   }
 
   /**
@@ -171,8 +172,8 @@ export class GCloudDestination extends AbstractLogDestination{
    * 
    * @param entry 
    */
-  override write(entry: IJLogEntry): void {
-    const output = this.formatOutput(entry);
+  override write(entry: IJLogEntry, loggerLevel?: LogLevel, defaultPayload?: IJson): void {
+    const output = this.formatOutput(entry, loggerLevel, defaultPayload);
     console.log(JSON.stringify(output));
   }
 }
