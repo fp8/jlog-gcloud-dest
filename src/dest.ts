@@ -58,23 +58,6 @@ export function levelToSeverity(level: LogLevel): TGLOGGER_SEVERITY {
 }
 
 /**
- * Add Label to cummulator if loggable type is Label
- *
- * @param cummulator 
- * @param input 
- * @returns 
- */
-function setLabelFromLoggable(cummulator: TLabelKV, input: AbstractLoggable): boolean {
-  if (input instanceof Label) {
-    // TODO: remove in v0.5.0 of jlog-facade
-    cummulator[input.key] = input.value as string;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-/**
  * In case of error, the output `.message` needs to contain the stacktrace and `.log` needs to contain the message.
  * However, if the IJLogEntry's message is the same error.message, the `.log` entry is skipped.
  * 
@@ -120,11 +103,13 @@ export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel
   // Split entry.loggables to labels and loggables
   if (entry.loggables) {
     for (const loggable of entry.loggables) {
-      // Set label
-      if (setLabelFromLoggable(labels, loggable)) continue;
-
-      // Add rest to others
-      loggables.push(loggable);
+      if (loggable instanceof Label) {
+        // Set label
+        labels[loggable.key] = labels.value;
+      } else {
+        // Add rest to others
+        loggables.push(loggable);
+      }
     }
   }
 
@@ -173,6 +158,10 @@ export class GCloudDestination extends AbstractLogDestination{
    * @param entry 
    */
   override write(entry: IJLogEntry, loggerLevel?: LogLevel, defaultPayload?: IJson): void {
+    // Output to interceptor
+    this._write(entry, loggerLevel, defaultPayload);
+
+    // Format log entry and output to console
     const output = this.formatOutput(entry, loggerLevel, defaultPayload);
     console.log(JSON.stringify(output));
   }

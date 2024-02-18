@@ -39,6 +39,6 @@
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "jlog-facade": "^0.8.0"
+        "jlog-facade": "^0.9.0"
     }
 }
