@@ -1,5 +1,9 @@
 # jlog-gcloud-dest
 
+## 0.3.2 [2024-02-24]
+
+* Update jlog-facade to 0.9.1 and use `safeStringify` on `.write` instead of `JSON.stringify`
+
 ## 0.3.1 [2024-02-18]
 
 * Update jlog-facade to 0.9.0 and added support for log interceptor

@@ -1,8 +1,9 @@
 import {
-  TJsonValue, LogLevel, IJLogEntry, AbstractLoggable,
-  Label, buildOutputDataForDestination, AbstractLogDestination,
+  IJson, TJsonValue, IJLogEntry,
+  LogLevel, AbstractLoggable, Label,
+  safeStringify, buildOutputDataForDestination, AbstractLogDestination,
   useDestination,
-  IJson
+  
 } from 'jlog-facade';
 
 export type TGLOGGER_SEVERITY = 'EMERGENCY' | 'ERROR' | 'WARNING' | 'INFO' | 'DEBUG';
@@ -105,7 +106,7 @@ export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel
     for (const loggable of entry.loggables) {
       if (loggable instanceof Label) {
         // Set label
-        labels[loggable.key] = labels.value;
+        labels[loggable.key] = loggable.value;
       } else {
         // Add rest to others
         loggables.push(loggable);
@@ -163,7 +164,7 @@ export class GCloudDestination extends AbstractLogDestination{
 
     // Format log entry and output to console
     const output = this.formatOutput(entry, loggerLevel, defaultPayload);
-    console.log(JSON.stringify(output));
+    console.log(safeStringify(output));
   }
 }
 

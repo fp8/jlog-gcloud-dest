@@ -1,6 +1,6 @@
 {
     "name": "jlog-gcloud-dest",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "main": "lib/index.js",
     "author": "marcos.lin@farport.co",
     "license": "MIT",
@@ -39,6 +39,6 @@
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "jlog-facade": "^0.9.0"
+        "jlog-facade": "^0.9.1"
     }
 }
