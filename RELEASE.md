@@ -1,5 +1,9 @@
 # jlog-gcloud-dest
 
+## 0.3.3 [2025-08-03]
+
+* infra: moved from ts-mocha to jest
+
 ## 0.3.2 [2024-02-24]
 
 * Update jlog-facade to 0.9.1 and use `safeStringify` on `.write` instead of `JSON.stringify`

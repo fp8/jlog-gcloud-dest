@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@proj": ["dist"],
+      "@proj/*": ["dist/*"]
+    },
+  }
+}

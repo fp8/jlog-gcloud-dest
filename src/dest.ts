@@ -1,71 +1,85 @@
 import {
-  IJson, TJsonValue, IJLogEntry,
-  LogLevel, AbstractLoggable, Label,
-  safeStringify, buildOutputDataForDestination, AbstractLogDestination,
+  AbstractLogDestination,
+  AbstractLoggable,
+  buildOutputDataForDestination,
+  IJLogEntry,
+  IJson,
+  Label,
+  LogLevel,
+  printLine,
+  safeStringify,
+  TJsonValue,
   useDestination,
-  
-} from 'jlog-facade';
+} from "jlog-facade";
 
-export type TGLOGGER_SEVERITY = 'EMERGENCY' | 'ERROR' | 'WARNING' | 'INFO' | 'DEBUG';
+export type TGLOGGER_SEVERITY =
+  | "EMERGENCY"
+  | "ERROR"
+  | "WARNING"
+  | "INFO"
+  | "DEBUG";
 
-type TLabelKV = {[key: string]: string};
+type TLabelKV = { [key: string]: string };
 
-const GCLOUD_LABEL_KEY = 'logging.googleapis.com/labels';
-const GCLOUD_LOGGER_NAME_KEY = 'loggerName';
+const GCLOUD_LABEL_KEY = "logging.googleapis.com/labels";
+const GCLOUD_LOGGER_NAME_KEY = "loggerName";
 
 /**
  * Define the json output to be consumed by Google Cloud Logging.  The `log` property
  * is used to host the `message` when `.error` is present in the IJLogEntry.  In this
  * case, the `message` should contain stack trace
- * 
+ *
  * ref: https://cloud.google.com/logging/docs/agent/logging/configuration#special-fields
  */
 export interface IGCloudLogOutput {
-  severity: string,
-  message: string,
-  log?: string,
-  time: string,
-  [key: string]: TJsonValue
+  severity: string;
+  message: string;
+  log?: string;
+  time: string;
+  [key: string]: TJsonValue;
 }
 
 /**
  * Convert log level to Severity supported by Google Cloud
- * 
+ *
  * Any added level converted to INFO.
- * 
- * @param level 
+ *
+ * @param level
  */
 export function levelToSeverity(level: LogLevel): TGLOGGER_SEVERITY {
   switch (level) {
     case LogLevel.PANIC: // PANIC
-      return 'EMERGENCY';
+      return "EMERGENCY";
 
     case LogLevel.ERROR: // ERROR
-      return 'ERROR';
+      return "ERROR";
 
     case LogLevel.WARNING: // WARNING
-      return 'WARNING';
+      return "WARNING";
 
     case LogLevel.INFO: // INFO
-      return 'INFO';
+      return "INFO";
 
     case LogLevel.DEBUG: // DEBUG
-      return 'DEBUG';
+      return "DEBUG";
 
     // Everything else is INFO
     default:
-      return 'INFO';
+      return "INFO";
   }
 }
 
 /**
  * In case of error, the output `.message` needs to contain the stacktrace and `.log` needs to contain the message.
  * However, if the IJLogEntry's message is the same error.message, the `.log` entry is skipped.
- * 
- * @param input 
- * @param error 
+ *
+ * @param input
+ * @param error
  */
-function appendErrorToGCloudOutput(input: IGCloudLogOutput, error?: Error): void {
+function appendErrorToGCloudOutput(
+  input: IGCloudLogOutput,
+  error?: Error,
+): void {
   if (error) {
     // Build the message from error
     let message: string;
@@ -90,10 +104,14 @@ function appendErrorToGCloudOutput(input: IGCloudLogOutput, error?: Error): void
 /**
  * Format IJLogEntry to format required by Google Cloud
  *
- * @param entry 
- * @returns 
+ * @param entry
+ * @returns
  */
-export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel, defaultPayload?: IJson): IGCloudLogOutput {
+export function formatGCloudLogOutput(
+  entry: IJLogEntry,
+  _loggerLevel?: LogLevel,
+  defaultPayload?: IJson,
+): IGCloudLogOutput {
   const severity = levelToSeverity(entry.level);
   const message = entry.message;
   const time = entry.time.toISOString();
@@ -115,7 +133,12 @@ export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel
   }
 
   // Build the payload for the logger
-  const payload = buildOutputDataForDestination(loggables, entry.data, defaultPayload, entry.values);
+  const payload = buildOutputDataForDestination(
+    loggables,
+    entry.data,
+    defaultPayload,
+    entry.values,
+  );
 
   // Add logger name
   labels[GCLOUD_LOGGER_NAME_KEY] = entry.name;
@@ -128,7 +151,7 @@ export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel
     severity,
     message,
     time,
-    ...payload
+    ...payload,
   };
 
   appendErrorToGCloudOutput(output, entry.error);
@@ -139,38 +162,45 @@ export function formatGCloudLogOutput(entry: IJLogEntry, _loggerLevel?: LogLevel
 /**
  * Google Cloud Logging Destination
  */
-export class GCloudDestination extends AbstractLogDestination{
-  public static use(level?: string | LogLevel, ...filters: string[]): GCloudDestination {
+export class GCloudDestination extends AbstractLogDestination {
+  public static use(
+    level?: string | LogLevel,
+    ...filters: string[]
+  ): GCloudDestination {
     return useDestination(GCloudDestination, level, filters);
   }
 
   /**
    * A simple wrapper allow test to override this method
-   * @param entry 
-   * @returns 
+   * @param entry
+   * @returns
    */
-  protected formatOutput(entry: IJLogEntry, loggerLevel?: LogLevel, defaultPayload?: IJson): IGCloudLogOutput {
+  protected formatOutput(
+    entry: IJLogEntry,
+    loggerLevel?: LogLevel,
+    defaultPayload?: IJson,
+  ): IGCloudLogOutput {
     return formatGCloudLogOutput(entry, loggerLevel, defaultPayload);
   }
 
   /**
    * Write formatted Google Cloud output to stdout
-   * 
-   * @param entry 
+   *
+   * @param entry
    */
-  override write(entry: IJLogEntry, loggerLevel?: LogLevel, defaultPayload?: IJson): void {
+  override write(
+    entry: IJLogEntry,
+    loggerLevel?: LogLevel,
+    defaultPayload?: IJson,
+  ): void {
     // Output to interceptor
     this._write(entry, loggerLevel, defaultPayload);
 
-    // Format log entry and output to console
+    // Format log entry and output to stdout
     const output = this.formatOutput(entry, loggerLevel, defaultPayload);
-    console.log(safeStringify(output));
+    printLine(safeStringify(output));
   }
 }
-
-
-
-
 
 /*
 ## Target Output
