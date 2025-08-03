@@ -1,5 +1,12 @@
 # jlog-gcloud-dest
 
+## 0.3.3 [2025-08-03]
+
+* Replaced `console.log` in `.write` method with `printLine` from `jlog-facade`
+* infra: moved from ts-mocha to jest
+* infra: updated outdated github action dependencies
+* infra: added `lint:format` to ensure standarized code formatting
+
 ## 0.3.2 [2024-02-24]
 
 * Update jlog-facade to 0.9.1 and use `safeStringify` on `.write` instead of `JSON.stringify`
